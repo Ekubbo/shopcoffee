@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	<link rel="stylesheet" href="static/css/home.css">
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	
+	<meta charset="UTF-8">
+	<title>SHOP COFFEE</title>
+</head>
+<body>
+	<div class="top-line-menu">
+		<div class="top-line-menu-content">
+			<div class="top-line-menu-logo float-left">
+				SHOP COFFEE
+			</div>
+			<div class="top-line-menu-card float-right">
+				CART ( 5 )
+			</div>
+		</div>
+	</div>
+
+	<div class="content text-center">
+		<div id="app">
+			<div class="container-fluid">
+				<transition-group name="list" tag="div" class="row">						
+					<div v-for="product in products" class="col-sm-4 list-item" v-bind:key="product">
+						<img :src="[[ product.photo ]]" class="img-fluid" alt="...">
+						<div class="product-name">
+							<div class="inline float-left">
+								[[ product.name ]]
+							</div>						
+							<div class="inline float-right">
+								[[ product.price ]] Р
+							</div>
+						</div>
+					</div>
+				</transition-group>
+
+				<div>
+					<button class="still" v-on:click="loadProducts" v-if="next_page !== null">
+						MORE
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="bottom-line">
+		<div class="d-inline">
+			<div class="bottom-line-copyright">
+				COPYRIGHT 2018
+			</div>
+		</div>
+	</div>
+</body>
+	<script src="static/js/home.js"></script>
+</html>
