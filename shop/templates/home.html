@@ -5,6 +5,8 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 	<link rel="stylesheet" href="static/css/home.css">
 	<link rel="stylesheet" href="static/css/modal.css">
+	{% load staticfiles %}
+	<link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
 
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
@@ -17,62 +19,31 @@
 	<meta charset="UTF-8">
 	<title>SHOP COFFEE</title>
 </head>
-<body>
-	<div class="top-line-menu">
-		<div class="top-line-menu-content">
-			<div class="top-line-menu-logo float-left">
-				SHOP COFFEE
-			</div>
-			<div class="top-line-menu-card float-right">
-				CART ( 5 )
+<body class="text-center">
+	<div id="app">
+		<div class="top-line-menu">
+			<div class="top-line-menu-content">
+				<div class="top-line-menu-logo float-left">
+					SHOP COFFEE
+				</div>
+				<div class="top-line-menu-card float-right">
+					<cart-modal v-if=is_show_cart v-on:close="is_show_cart = false" v-bind:products=cart_list v-on:remove="removeFromCart($event)"  v-on:set="setToCart.apply(null, $event)">
+					</cart-modal>
+					<a v-on:click="is_show_cart = true" class="cart-quantity">
+						CART ( <counter v-bind:number=cout_products_in_cart></counter> )
+					</a>
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<div class="content text-center">
-		<div id="app">
-
-			<modal v-if="showModal" @close="showModal = false">
-				<div class="container-fluid" slot="body">
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="block-img-popup" v-bind:style="{ backgroundImage: 'url(' + [[ selectedProduct.photo ]] + ')' }">
-							</div>
-						</div>
-						<div class="col-sm-6">
-							<div>
-								<h2> [[ selectedProduct.name ]] </h3>
-								<p> [[ selectedProduct.description ]] </p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</modal>
-
+		<div class="content text-center">
 			<div class="container-fluid">
-				<transition-group name="list" tag="div" class="row">						
-					<div v-for="product in products" class="col-sm-4 list-item" v-bind:key="product">
-						<img :src="[[ product.photo ]]" class="img-fluid" alt="..." @click="displayProduct(product)">
-						<div class="product-name">
-							<div class="inline float-left">
-								[[ product.name ]]
-							</div>						
-							<div class="inline float-right">
-								[[ product.price ]] Р
-							</div>
-						</div>
-					</div>
-				</transition-group>
-
-				<div>
-					<button class="still" v-on:click="loadProducts" v-if="next_page !== null">
-						MORE
-					</button>
-				</div>
+				<list-products v-on:addtocart="addToCart.apply(null, $event)">
+				</list-products>
 			</div>
 		</div>
 	</div>
-	
+
 	<div class="bottom-line">
 		<div class="d-inline">
 			<div class="bottom-line-copyright">
@@ -86,12 +57,111 @@
 			<div class="modal">
 				<div class="modal__inner">
 					<span class="close" @click="$emit('close')">×</span>
-					<slot name="body">
-						default body
-					</slot>
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="block-img-popup" v-bind:style="{ backgroundImage: 'url(' + [[ product.photo ]] + ')' }">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<h1> [[ product.name ]] </h1>
+								<div class="modal-price"> $[[ product.price ]] </div>
+								<p> [[ product.description ]] </p>
+								<div>
+									<input v-model.number="quantity" type="number" max="20" min="1" placeholder="QUANTITY" class="input-quantuty">
+									<button @click="$emit('addtocart', [product, quantity])">
+										ADD TO CART
+									</botton>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</transition>
 	</script>
+
+	<script type="text/x-template" id="cart-modal-template">
+		<transition name="modal">
+			<div class="modal">
+				<transition name="slide-fade">
+					<div class="modal-cart-content" v-if=show>
+						<span class="close-cart" v-on:click="$emit('close')">×</span>
+						<h2 class="heading-cart">CART</h2>
+						
+						<div v-for="item in products" v-bind:key="item" class="item-cart">
+							<div v-bind:style="{ backgroundImage: 'url(' + [[ item.photo ]] + ')' }" class="cart-item-img"></div>
+							<div class="cart-item-info">
+								<div class="cart-item-info-name">
+									<div class="cart-item-info-name_">[[ item.name ]]</div>
+									<div><span class="revove-item" @click="$emit('remove', item)">×</span></div>
+								</div> 
+								<div class="cart-item-info-quantity">
+									<p>Price: $[[ item.price ]] </p>
+								</div>
+								<div class="cart-item-info-price">
+									<div>
+										<p>
+											$<counter v-bind:number="item.price * item.quality"></counter>
+										</p>
+									</div>
+									<div class="text-right">
+											<span><button class="btn-set-quantity" v-on:click="$emit('set', [item, item.quality - 1])"><span>_</span></button></span>
+											<span class="cart-item-input-quantuty">
+												[[item.quality]]
+											</span>
+											<span><button class="btn-set-quantity" v-on:click="$emit('set', [item, item.quality + 1])">+</button></span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="cart-total-cost-block">
+							<span class="">TOTAL PRICE</span>
+							<span class="float-right">$<counter v-bind:number=totalCost></counter></span>
+						</div>
+						<div class="text-center">
+							<button class="btn-checkout">
+								CHECKOUT		
+							</button>
+						</div>
+					</div>
+				</transition>
+			</div>
+		</transition>
+	</script>
+	<script type="text/x-template" id="list-products">
+		<transition id="list-products">
+			<div>
+				<modal v-if="is_show_detail" @close="is_show_detail = false" v-bind:product=detail_product v-on:addtocart="$emit('addtocart', $event)">
+				</modal>
+
+				<transition-group name="list" tag="div" class="row">	
+					<div v-for="product in products" class="col-sm-4 list-item" v-bind:key="product">
+						<img :src="[[ product.photo ]]" class="img-fluid img-item-product" alt="..." @click="displayDetail(product)">
+						<div>
+							<div class="product-name">
+								[[ product.name ]]		
+							</div>
+							<div class="product-price">
+								$[[ product.price ]]
+							</div>	
+						</div>
+						<button v-if="true" class="add-to-card-block btn-checkout" @click="$emit('addtocart', [product, 1])">
+							ADD TO CART
+						</botton>
+					</div>
+				</transition-group>
+				<div>
+					<button class="still btn-checkout" v-on:click="loadProducts" v-if="next_page !== null">
+						MORE
+					</button>
+				</div>
+			</div>
+		</transition>
+	</script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js"></script>
+	<script src="static/js/get_cookie.js"></script>
 	<script src="static/js/home.js"></script>
 </html>

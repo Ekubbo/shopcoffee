@@ -37,6 +37,7 @@ body {
 	width: 100%;
 	height: 50px;
 	text-align: center;
+    margin-top: 20px;
 }
 .content{
 	margin-top: 20px;
@@ -68,7 +69,6 @@ body {
 	font-size: large;
 }
 .still{
-	font-weight: 900;
 	border: 0px;
 	background-color: white;
 	margin: 15px 0px;
@@ -79,4 +79,113 @@ button:focus {
 button:hover {
 	color: #786b59;
 	cursor: pointer;
+}
+.product-price{
+	margin: 4px 0px;
+}
+.input-quantuty{
+	padding-left: 15px;
+	width: 100px;
+	text-align: center;
+}
+.add-to-card-block{
+	margin-bottom: 20px;
+}
+.modal-price{
+	font-size: x-large;
+	color: dimgrey;
+	margin-bottom: 8px;
+}
+h1{
+	margin: 0px;
+}
+.img-item-product, .cart-quantity{
+    cursor: pointer;
+}
+.cart-item-img{
+	height: 110px;
+	width: 95px;
+	background-position: center;
+	background-size: cover;
+}
+.item-cart{
+	display: table;
+	padding-bottom: 20px;
+    border-bottom: 1px solid #E5E9EF;
+	margin-bottom: 10px;
+	width: 100%;
+	margin-right: 15px;
+}
+.item-cart > div{
+	display: table-cell;
+}
+.cart-item-info{
+	padding-left: 15px;
+}
+.cart-item-info-name, .cart-item-info-price{
+	display: table;
+	width:100%;
+	font-size: 18px;
+}
+.cart-item-info-name > div, .cart-item-info-price > div{
+	display: table-cell;
+	vertical-align: top;
+}
+.cart-item-info-name div:nth-child(2){
+	width: 20px;
+}
+.revove-item{
+    font-size: 30px;
+	font-family: "HelveticaNeueCyr-Italic";
+	line-height: 0.85;
+	opacity: .5;
+    position: relative;
+    float: right;
+}
+.revove-item:hover{
+	opacity: 1;
+	cursor: pointer;
+}
+.cart-item-info-quantity{
+	font-size: 14px;
+    color: darkgray;
+}
+.cart-item-input-quantuty{
+    display: inline-block;
+	text-align: center;
+    vertical-align: top;
+    padding: 0px 5px;
+    padding-top: 3px;
+    font-size: 16px;
+}
+.btn-set-quantity{
+	height: 25px;
+    width: 25px;
+    border-radius: 25px;
+    border: none;
+    font-family: "HelveticaNeueCyr-Italic";
+}
+.btn-set-quantity > span{	
+    position: relative;
+    top: -10px;
+}
+.cart-item-info-name_{
+	height: 40px;
+	padding-top: 2px;
+}
+.cart-item-info-quantity{
+	height: 35px;
+}
+.btn-checkout{
+    width: 250px;
+    background-color: #1f1f1f;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 5px 0px;
+    font-size: 14px;
+}
+.cart-total-cost-block{
+	width: 100%;
+    margin: 30px 0px;
 }
