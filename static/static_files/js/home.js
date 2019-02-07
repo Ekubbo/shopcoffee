@@ -16,6 +16,46 @@ Vue.component('modal', {
 	},
 });
 
+Vue.component('modal-order', {
+	delimiters: ["[[","]]"],
+	template: '#modal-order-template',
+	props: ['cart_list'],
+	data: function () {
+		return {
+			errors: {
+			},
+			fields:{
+				first_name: '',
+				last_name: '',
+				phone_client: '',
+				adress_client: '',
+				comment: '',
+			},
+			confirm_checkout: false,
+		}
+	},
+	methods:{
+		confirmCheckout: function(){
+			var params = this.fields;
+			var config = {headers: {'X-CSRFToken': csrftoken}};
+
+			var that = this;
+			axios.post("/api/order/", params, config).then(function(response){
+				that.confirm_checkout = true;
+			}).catch(function(error){
+				that.errors = error.response.data;
+			});
+		},
+	},
+	watch: {
+		quantity: function(newValue) {
+			this.quantity = parseInt(this.quantity);
+			if (this.quantity > 20) this.quantity = 20;
+			if (this.quantity < 1) this.quantity = 1;
+		}
+	},
+});
+
 Vue.component('list-products', {
 	delimiters: ["[[","]]"],
 	template: '#list-products',
@@ -85,14 +125,13 @@ Vue.component("cart-modal", {
 		totalCost: function() {;
 			let result = 0;
 			for (var i = 0; i < this.products.length; i++) {
-				result += this.products[i].price * this.products[i].quality;
+				result += this.products[i].product.price * this.products[i].quantity;
 			}
 			return result;
 		}
 	},
 	mounted: function () {
 		this.show = true;
-		this.total_cost = this.totalCost();
 	},
 });
 
@@ -102,6 +141,7 @@ var app = new Vue({
 	data : {
 		cart_list: [],
 		is_show_cart: false,
+		is_show_order: false,
 		cout_products_in_cart: 0,
 	},
 	mounted: function () {
@@ -109,17 +149,17 @@ var app = new Vue({
 	},
 	methods: {
 		setToCart: function(item, quantity){
-			var params = {quantity : quantity, slug : item.slug, }
-			var config = {headers: {'X-CSRFToken': csrftoken}, }
-			
+			var params = {quantity : quantity, slug : item.slug};
+			var config = {headers: {'X-CSRFToken': csrftoken}};
+
 			that = this;
 			axios.put("/api/basket/add/", params, config).then(function(response){
 				that.updateCartList();
 			});
 		},
 		addToCart: function(item, quantity){
-			var params = {quantity : quantity, slug : item.slug, }
-			var config = {headers: {'X-CSRFToken': csrftoken}, }
+			var params = {quantity : quantity, slug : item.slug};
+			var config = {headers: {'X-CSRFToken': csrftoken}};
 
 			that = this;
 			axios.post("/api/basket/add/", params, config).then(function(response){
@@ -127,8 +167,11 @@ var app = new Vue({
 			});
 		},
 		removeFromCart: function(product){
+			var params = {"slug": product.slug};
+			var config = {headers: {'X-CSRFToken': csrftoken}};
+
 			var that = this;
-			axios.post("/api/basket/delete/", {"slug": product.slug}).then(function(response){
+			axios.post("/api/basket/delete/", params, config).then(function(response){
 				that.updateCartList();
 			});
 		},
@@ -136,9 +179,10 @@ var app = new Vue({
 			var that = this;
 			axios.get("/api/basket/list/").then(function(response){
 				that.cart_list = response.data;
-				cout_products_in_cart = 0;
+
+                cout_products_in_cart = 0;
 				for (var i = that.cart_list.length - 1; i >= 0; i--) {
-					cout_products_in_cart += that.cart_list[i].quality;
+					cout_products_in_cart += that.cart_list[i].quantity;
 				}
 				that.cout_products_in_cart = cout_products_in_cart;
 			});

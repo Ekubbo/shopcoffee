@@ -50,9 +50,9 @@ body {
 	font-weight: 700;
 }
 .img-thumbnail {
-     padding: 0px; 
-     border: 0px; 
-     border-radius: 0px; 
+     padding: 0px;
+     border: 0px;
+     border-radius: 0px;
 }
 .top-line-menu-card{
 	margin-top: 14px;
@@ -61,8 +61,8 @@ body {
 	margin-top: 5px;
 	padding: 0px 5px;
 	font-size: large;
-	height: 32px;
-    border-bottom: 1px solid #E5E9EF;
+	padding-bottom: 4px;
+	border-bottom: 1px solid #E5E9EF;
 }
 .product-name div{
 	margin-bottom: 25px;
@@ -87,6 +87,7 @@ button:hover {
 	padding-left: 15px;
 	width: 100px;
 	text-align: center;
+    height: initial;
 }
 .add-to-card-block{
 	margin-bottom: 20px;
@@ -165,7 +166,7 @@ h1{
     border: none;
     font-family: "HelveticaNeueCyr-Italic";
 }
-.btn-set-quantity > span{	
+.btn-set-quantity > span{
     position: relative;
     top: -10px;
 }
@@ -177,7 +178,8 @@ h1{
 	height: 35px;
 }
 .btn-checkout{
-    width: 250px;
+    max-width: 250px;
+    width: 100%;
     background-color: #1f1f1f;
     color: white;
     border: none;
@@ -188,4 +190,14 @@ h1{
 .cart-total-cost-block{
 	width: 100%;
     margin: 30px 0px;
+}
+.emptycart{
+	background-color: #7c7c7c;
+}
+.emptycart:hover{
+	cursor: auto;
+	color: white;
+}
+.btn-checkout:hover{
+	color: white;
 }

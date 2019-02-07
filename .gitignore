@@ -4,3 +4,8 @@
 db.sqlite3
 static/media/*
 *.pyc
+shopcoffee/__pycache__/settings.cpython-37.pyc
+shopcoffee/__pycache__/urls.cpython-37.pyc
+shopcoffee/__pycache__/settings.cpython-37.pyc
+*.sqlite3
+db.sqlite3

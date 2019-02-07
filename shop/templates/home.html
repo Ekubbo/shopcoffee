@@ -27,7 +27,7 @@
 					SHOP COFFEE
 				</div>
 				<div class="top-line-menu-card float-right">
-					<cart-modal v-if=is_show_cart v-on:close="is_show_cart = false" v-bind:products=cart_list v-on:remove="removeFromCart($event)"  v-on:set="setToCart.apply(null, $event)">
+					<cart-modal v-if=is_show_cart v-on:close="is_show_cart=false" v-bind:products=cart_list v-on:remove="removeFromCart($event)"  v-on:set="setToCart.apply(null, $event)" v-on:openorder="is_show_order=true;is_show_cart=false">
 					</cart-modal>
 					<a v-on:click="is_show_cart = true" class="cart-quantity">
 						CART ( <counter v-bind:number=cout_products_in_cart></counter> )
@@ -42,6 +42,9 @@
 				</list-products>
 			</div>
 		</div>
+
+		<modal-order v-if="is_show_order" v-on:close="is_show_order=false" v-bind:products=cart_list v-on:remove="removeFromCart($event)"  v-on:set="setToCart.apply(null, $event)" v-on:back-to-cart="is_show_order=false;is_show_cart=true;">
+		</modal-order>
 	</div>
 
 	<div class="bottom-line">
@@ -52,24 +55,111 @@
 		</div>
 	</div>
 </body>
+
+	<script type="text/x-template" id="modal-order-template">
+		<transition name="modal" id="modal-order-template">
+			<div class="modal">
+				<div class="modal__inner">
+					<span class="close" v-on:click="$emit('close')">×</span>
+					<div class="container-fluid">
+						<div class="row">
+							<div v-if="!confirm_checkout" style="width: 100%;">
+								<div class="text-center col-12">
+									<h3>CHECKOUT</h3>
+								</div>
+								<div class="modal-cart-input-block">
+									<div class="col-12">
+										<div class="row">
+											<div class="col-12 col-sm-6 input-block">
+												<div class="error-text">
+													<label for="first-name">First Name</label>
+													<span v-if="'first_name' in errors">[[ errors.first_name[0] ]]</span>
+												</div>
+												<input type="text" id="first-name" v-model="fields.first_name"></input>
+											</div>
+											<div class="col-12 col-sm-6 input-block">
+												<div class="error-text">
+													<label for="last-name" >Last Name</label>
+													<span v-if="'last_name' in errors">[[ errors.last_name[0] ]]</span>
+												</div>
+												<input type="text" id="last-name" v-model="fields.last_name"></input>
+											</div>
+										</div>
+									</div>
+									<div class="col-12">
+										<div class="row">
+											<div class="col-12 col-sm-6 input-block">
+												<div class="error-text">
+													<label for="phone-number">Phone number</label>
+													<span v-if="'phone_client' in errors">[[ errors.phone_client[0] ]]</span>
+												</div>
+												<input type="text" id="phone-number" v-model="fields.phone_client"></input>
+											</div>
+											<div class="col-12 col-sm-6 input-block">
+												<div class="error-text">
+													<label for="address">Address</label>
+													<span v-if="'adress_client' in errors">[[ errors.adress_client[0] ]]</span>
+												</div>
+												<input type="text" id="address" v-model="fields.adress_client"></input>
+											</div>
+										</div>
+									</div>
+									<div class="col-12">
+										<div class="row">
+											<div class="col-12 input-block">
+												<div class="error-text">
+													<label for="comment">Comment</label>
+													<span v-if="'comment' in errors">[[ errors.comment[0] ]]</span>
+												</div>
+												<textarea id="comment" v-model="fields.comment">
+												</textarea>
+											</div>
+										</div>
+									</div>
+									<div class="col-12 text-center">
+										<button class="checkout-btn" v-on:click="$emit('back-to-cart')"> BACK TO CART </button>
+										<button class="checkout-btn" v-on:click="confirmCheckout()"> CONFIRM CHECKOUT </button>
+									</div>
+								</div>
+							</div>
+							<div v-else class="text-center order-complite-block">
+								<h3 class="order-complite">
+									Thank you for your order!
+								</h3>
+								<div class="text-center">
+									<p class="order-complite-text">
+										This is Photoshop's version  of Lorem Ipsum. Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit.
+									</p>
+								</div>
+								<button v-on:click="$emit('close')">
+									back to main page
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</transition>
+	</script>
+
 	<script type="text/x-template" id="modal-template">
 		<transition name="modal" id="modal-template">
 			<div class="modal">
 				<div class="modal__inner">
-					<span class="close" @click="$emit('close')">×</span>
+					<span class="close" v-on:click="$emit('close')">×</span>
 					<div class="container-fluid">
 						<div class="row">
-							<div class="col-sm-6">
+							<div class="col-md-6">
 								<div class="block-img-popup" v-bind:style="{ backgroundImage: 'url(' + [[ product.photo ]] + ')' }">
 								</div>
 							</div>
-							<div class="col-sm-6">
+							<div class="col-md-6">
 								<h1> [[ product.name ]] </h1>
 								<div class="modal-price"> $[[ product.price ]] </div>
 								<p> [[ product.description ]] </p>
 								<div>
 									<input v-model.number="quantity" type="number" max="20" min="1" placeholder="QUANTITY" class="input-quantuty">
-									<button @click="$emit('addtocart', [product, quantity])">
+									<button v-on:click="$emit('addtocart', [product, quantity])">
 										ADD TO CART
 									</botton>
 								</div>
@@ -88,29 +178,29 @@
 					<div class="modal-cart-content" v-if=show>
 						<span class="close-cart" v-on:click="$emit('close')">×</span>
 						<h2 class="heading-cart">CART</h2>
-						
+
 						<div v-for="item in products" v-bind:key="item" class="item-cart">
-							<div v-bind:style="{ backgroundImage: 'url(' + [[ item.photo ]] + ')' }" class="cart-item-img"></div>
+							<div v-bind:style="{ backgroundImage: 'url(' + [[ item.product.photo ]] + ')' }" class="cart-item-img"></div>
 							<div class="cart-item-info">
 								<div class="cart-item-info-name">
-									<div class="cart-item-info-name_">[[ item.name ]]</div>
-									<div><span class="revove-item" @click="$emit('remove', item)">×</span></div>
-								</div> 
+									<div class="cart-item-info-name_">[[ item.product.name ]]</div>
+									<div><span class="revove-item" v-on:click="$emit('remove', item.product)">×</span></div>
+								</div>
 								<div class="cart-item-info-quantity">
-									<p>Price: $[[ item.price ]] </p>
+									<p>Price: $[[ item.product.price ]] </p>
 								</div>
 								<div class="cart-item-info-price">
 									<div>
 										<p>
-											$<counter v-bind:number="item.price * item.quality"></counter>
+											$<counter v-bind:number="item.product.price * item.quantity"></counter>
 										</p>
 									</div>
 									<div class="text-right">
-											<span><button class="btn-set-quantity" v-on:click="$emit('set', [item, item.quality - 1])"><span>_</span></button></span>
+											<span><button class="btn-set-quantity" v-on:click="$emit('set', [item.product, item.quantity - 1])"><span>_</span></button></span>
 											<span class="cart-item-input-quantuty">
-												[[item.quality]]
+												[[item.quantity]]
 											</span>
-											<span><button class="btn-set-quantity" v-on:click="$emit('set', [item, item.quality + 1])">+</button></span>
+											<span><button class="btn-set-quantity" v-on:click="$emit('set', [item.product, item.quantity + 1])">+</button></span>
 									</div>
 								</div>
 							</div>
@@ -121,8 +211,8 @@
 							<span class="float-right">$<counter v-bind:number=totalCost></counter></span>
 						</div>
 						<div class="text-center">
-							<button class="btn-checkout">
-								CHECKOUT		
+							<button class="btn-checkout" v-bind:class="{ emptycart: products.length == 0 }" v-on:click="$emit('openorder')">
+								CHECKOUT
 							</button>
 						</div>
 					</div>
@@ -136,18 +226,19 @@
 				<modal v-if="is_show_detail" @close="is_show_detail = false" v-bind:product=detail_product v-on:addtocart="$emit('addtocart', $event)">
 				</modal>
 
-				<transition-group name="list" tag="div" class="row">	
-					<div v-for="product in products" class="col-sm-4 list-item" v-bind:key="product">
-						<img :src="[[ product.photo ]]" class="img-fluid img-item-product" alt="..." @click="displayDetail(product)">
+				<transition-group name="list" tag="div" class="row">
+					<div v-for="product in products" class="col-sm-6 col-md-4 list-item" v-bind:key="product">
+						<img :src="[[ product.photo ]]" class="img-fluid img-item-product" alt="..." v-on:click="displayDetail(product)">
 						<div>
 							<div class="product-name">
-								[[ product.name ]]		
+								[[ product.name ]]
 							</div>
 							<div class="product-price">
 								$[[ product.price ]]
-							</div>	
+							</div>
+
 						</div>
-						<button v-if="true" class="add-to-card-block btn-checkout" @click="$emit('addtocart', [product, 1])">
+						<button v-if="true" class="add-to-card-block btn-checkout" v-on:click="$emit('addtocart', [product, 1])">
 							ADD TO CART
 						</botton>
 					</div>
