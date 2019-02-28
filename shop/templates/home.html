@@ -61,7 +61,7 @@
 			<div class="modal">
 				<div class="modal__inner">
 					<span class="close" v-on:click="$emit('close')">×</span>
-					<div class="container-fluid">
+					<div class="container-fluid container-modal">
 						<div class="row">
 							<div v-if="!confirm_checkout" style="width: 100%;">
 								<div class="text-center col-12">
@@ -131,7 +131,7 @@
 										This is Photoshop's version  of Lorem Ipsum. Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit.
 									</p>
 								</div>
-								<button v-on:click="$emit('close')">
+								<button v-on:click="$emit('close')" class="checkout-btn">
 									back to main page
 								</button>
 							</div>
@@ -211,7 +211,7 @@
 							<span class="float-right">$<counter v-bind:number=totalCost></counter></span>
 						</div>
 						<div class="text-center">
-							<button class="btn-checkout" v-bind:class="{ emptycart: products.length == 0 }" v-on:click="$emit('openorder')">
+							<button class="btn-checkout" v-on:click="$emit('openorder')" :disabled="products.length == 0">
 								CHECKOUT
 							</button>
 						</div>

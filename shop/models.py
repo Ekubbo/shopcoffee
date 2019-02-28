@@ -3,9 +3,9 @@ from django.template.defaultfilters import slugify
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 STATUS = (
-    ("Пол.", "Получено", ),
-    ("Обр.", "Обработано", ),
-    ("Отп.", "Отправлено", ),
+    ("Rec.", "Received", ),
+    ("Proc.", "Processed", ),
+    ("Tran.", "Transmitted", ),
 )
 
 
@@ -36,29 +36,29 @@ class Order(models.Model):
     last_name = models.CharField(max_length=150)
     phone_client = models.CharField(max_length=150)
     adress_client = models.CharField(max_length=250)
-    comment = models.CharField(max_length=700, blank=True)
+    comment = models.TextField(max_length=700, blank=True)
     status = models.CharField(max_length=20, choices=STATUS, default=STATUS[0][0])
     date_created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-date_created']
 
+    def __str__(self):
+        return "Order {}".format(self.id)
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    price = models.IntegerField()
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     quantity = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(50)])
 
+    class Meta:
+        unique_together = ('order', 'product',)
+
     def save(self, *args, **kwargs):
-        self.price = self.product.price
         models.Model.save(self, *args, **kwargs)
 
     def cost(self):
-        quantity = self.quantity
-        price = 0
-
-        if self.price:
-            price = self.price
-
+        quantity = self.quantity if self.quantity else 0
+        price = self.product.price if self.product.price else 0
         return price * quantity
