@@ -148,15 +148,6 @@ var app = new Vue({
 		this.updateCartList();
 	},
 	methods: {
-		setToCart: function(item, quantity){
-			var params = {quantity : quantity, slug : item.slug};
-			var config = {headers: {'X-CSRFToken': csrftoken}};
-
-			that = this;
-			axios.put("/api/cart/add/", params, config).then(function(response){
-				that.updateCartList();
-			});
-		},
 		addToCart: function(item, quantity){
 			var params = {quantity : quantity, slug : item.slug};
 			var config = {headers: {'X-CSRFToken': csrftoken}};

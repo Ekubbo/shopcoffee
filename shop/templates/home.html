@@ -27,7 +27,7 @@
 					SHOP COFFEE
 				</div>
 				<div class="top-line-menu-card float-right">
-					<cart-modal v-if=is_show_cart v-on:close="is_show_cart=false" v-bind:products=cart_list v-on:remove="removeFromCart($event)"  v-on:set="setToCart.apply(null, $event)" v-on:openorder="is_show_order=true;is_show_cart=false">
+					<cart-modal v-if=is_show_cart v-on:close="is_show_cart=false" v-bind:products=cart_list v-on:remove="removeFromCart($event)"  v-on:set="addToCart.apply(null, $event)" v-on:openorder="is_show_order=true;is_show_cart=false">
 					</cart-modal>
 					<a v-on:click="is_show_cart = true" class="cart-quantity">
 						CART ( <counter v-bind:number=cout_products_in_cart></counter> )
