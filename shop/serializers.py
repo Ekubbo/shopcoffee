@@ -21,3 +21,9 @@ class OrderSerializers(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = '__all__'
+
+
+class CartItemSerializers(serializers.Serializer):
+
+    product = ProductSerializers(read_only=False, many=False)
+    quantity = serializers.IntegerField()

@@ -153,7 +153,7 @@ var app = new Vue({
 			var config = {headers: {'X-CSRFToken': csrftoken}};
 
 			that = this;
-			axios.put("/api/basket/add/", params, config).then(function(response){
+			axios.put("/api/cart/add/", params, config).then(function(response){
 				that.updateCartList();
 			});
 		},
@@ -162,7 +162,7 @@ var app = new Vue({
 			var config = {headers: {'X-CSRFToken': csrftoken}};
 
 			that = this;
-			axios.post("/api/basket/add/", params, config).then(function(response){
+			axios.post("/api/cart/add/", params, config).then(function(response){
 				that.updateCartList();
 			});
 		},
@@ -171,13 +171,13 @@ var app = new Vue({
 			var config = {headers: {'X-CSRFToken': csrftoken}};
 
 			var that = this;
-			axios.post("/api/basket/delete/", params, config).then(function(response){
+			axios.post("/api/cart/delete/", params, config).then(function(response){
 				that.updateCartList();
 			});
 		},
 		updateCartList: function(){
 			var that = this;
-			axios.get("/api/basket/list/").then(function(response){
+			axios.get("/api/cart/list/").then(function(response){
 				that.cart_list = response.data;
 
                 cout_products_in_cart = 0;

@@ -1,5 +1,4 @@
 from django.db import models
-from django.template.defaultfilters import slugify
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 STATUS = (
@@ -11,7 +10,7 @@ STATUS = (
 
 class Product(models.Model):
     name = models.CharField(max_length=150)
-    slug = models.SlugField(unique=True, verbose_name="URL")
+    slug = models.SlugField(max_length=150, unique=True, verbose_name="URL")
     description = models.TextField(max_length=500, blank=True)
     price = models.IntegerField()
     photo = models.ImageField()
@@ -21,14 +20,6 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-
-    def _get_unique_slug(self):
-        unique_slug = slugify(self.name)
-        num = 1
-        while Product.objects.filter(slug=unique_slug).exists():
-            unique_slug = '{}-{}'.format(unique_slug, num)
-            num += 1
-        return unique_slug
 
 
 class Order(models.Model):
