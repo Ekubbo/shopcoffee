@@ -1,2 +1,2 @@
 # shopcoffee
-soulekubo.pythonanywhere.com
+http://soulekubo.pythonanywhere.com
